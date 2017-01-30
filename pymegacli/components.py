@@ -180,21 +180,20 @@ class Disk(Component):
 
 class LogicalDevice(Component):
     PARSER = BlockParser(rules=[
-        once_per_block(colon_field('Virtual Drive', lambda s: int(s.split(' ')[0]))),
         rule(colon_field('Bad Blocks Exist', yesnobool)),
         rule(colon_field('Size', parse_bytes)),
         bail_on('No Virtual Drive Configured'),
     ], default_constructor=colon_field(None, str))
 
-    REQUIRED_FIELDS = ('Name', )
+    REQUIRED_FIELDS = ('Virtual Drive',)
 
-    def __init__(self, name, parent, props=None):
-        self.name = name
+    def __init__(self, id, parent, props=None):
+        self.id = int(id.split()[0])
         super(LogicalDevice, self).__init__(parent, props)
 
     @property
     def identifier(self):
-        return 'VD %r' % self.name
+        return 'VD %d' % self.id
 
     @property
     def health_status(self):
