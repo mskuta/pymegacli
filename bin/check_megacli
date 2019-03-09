@@ -69,7 +69,7 @@ def main():
                     check_component(disk)
             if checks['LD']:
                 for logical_device in controller.LDs:
-                    check_component(disk)
+                    check_component(logical_device)
                     if 'WriteBack' not in logical_device['Current Cache Policy']:
                         messages[WARNING].append('%s has cache policy %s, which does not include WriteBack' % (
                             logical_device.identifier,
