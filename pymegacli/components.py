@@ -276,7 +276,7 @@ class MegaCLIController(object):
     @property
     def PDs(self):
         return Disk.from_output(self.parent.run_command(
-            '-PDList', 'a%d' % self.controller_number
+            '-PDList', '-a%d' % self.controller_number
         ), self)
 
     @property
