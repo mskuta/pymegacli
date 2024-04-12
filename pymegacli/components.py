@@ -24,7 +24,7 @@ class MegaCLIBase(object):
 
     def run_command(self, *args):
         exit_re = re.compile('^Exit Code: (.*)$')
-        cmd = [self.megacli_path] + list(args)
+        cmd = [self.megacli_path] + list(args) + ['-NoLog']
         if self.log:
             self.log.debug('executing: ' + ' '.join(map(pipes.quote, cmd)))
         p = subprocess.Popen(
@@ -276,7 +276,7 @@ class MegaCLIController(object):
     @property
     def PDs(self):
         return Disk.from_output(self.parent.run_command(
-            '-PDList', 'a%d' % self.controller_number
+            '-PDList', '-a%d' % self.controller_number
         ), self)
 
     @property
