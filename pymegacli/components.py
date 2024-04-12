@@ -168,7 +168,7 @@ class Disk(Component):
                 status[key] = self.props[key]
                 overall_status = False
         for key in self.ERROR_BOOL_KEYS:
-            if self.props.get(key, 0) != 0:
+            if not self.props.get(key, 0):
                 status[key] = self.props[key]
                 overall_status = False
         # need to allow for JBOD as well
