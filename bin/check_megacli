@@ -17,19 +17,26 @@ UNKNOWN = 3
 
 def main():
     CHECKS = {'PD', 'LD', 'BBU'}
+    WARNINGS = {'learncycle', 'writeback'}
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
         '--megacli-path',
         default='/opt/MegaRAID/MegaCli/MegaCli64',
-        help='Path to MegaCli or MegaCli64 (default %(default)s)'
+        help='Path to MegaCli or MegaCli64, defaults to: %(default)s'
     )
     parser.add_argument(
         '--check',
         choices=CHECKS,
         action='append',
-        help='Subsystems to check. If not passed, defaults to all'
+        help='Subsystems to check, defaults to: all'
+    )
+    parser.add_argument(
+        '-W', '--warnings',
+        choices=WARNINGS,
+        action='append',
+        help='Additional warnings to be generated, defaults to: none'
     )
     args = parser.parse_args()
 
@@ -39,6 +46,10 @@ def main():
     checks = {}
     for check in CHECKS:
         checks[check] = (not args.check or check in args.check)
+
+    warnings = {}
+    for warning in WARNINGS:
+        warnings[warning] = (args.warnings and warning in args.warnings)
 
     connection = pymegacli.MegaCLIBase(args.megacli_path)
 
@@ -70,7 +81,7 @@ def main():
             if checks['LD']:
                 for logical_device in controller.LDs:
                     check_component(logical_device)
-                    if 'WriteBack' not in logical_device['Current Cache Policy']:
+                    if warnings['writeback'] and 'WriteBack' not in logical_device['Current Cache Policy']:
                         messages[WARNING].append('%s has cache policy %s, which does not include WriteBack' % (
                             logical_device.identifier,
                             logical_device['Current Cache Policy']
@@ -78,7 +89,7 @@ def main():
             if checks['BBU']:
                 for bbu in controller.BBUs:
                     check_component(bbu)
-                    if bbu['Learn Cycle Active']:
+                    if warnings['learncycle'] and bbu['Learn Cycle Active']:
                         messages[WARNING].append('%s is in learn cycle' % bbu.identifier)
 
     if messages[CRITICAL]:
