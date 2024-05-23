@@ -245,7 +245,7 @@ class BBU(Component):
         if self['Battery State'] != 'Optimal':
             status['Battery State'] = self['Battery State']
         for key in self.BAD_KEYS:
-            if self.get(key):
+            if self[key] != 'No':
                 status[key] = self[key]
         for key in self.UNEXPECTED_KEYS:
             if not self.get(key):

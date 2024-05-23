@@ -16,7 +16,7 @@ NOT_FOUND = object()
 
 
 def colon_field(expected_key, ty=str):
-    COLON_SEPARATED_RE = re.compile(r'\s*(?P<key>[a-zA-Z0-9. -]*)\s*:\s*(?P<value>.*)$')
+    COLON_SEPARATED_RE = re.compile(r'\s*(?P<key>[a-zA-Z0-9&. -]*)\s*:\s*(?P<value>.*)$')
 
     def parser(line):
         md = COLON_SEPARATED_RE.match(line)
